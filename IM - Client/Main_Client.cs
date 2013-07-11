@@ -391,5 +391,10 @@ namespace IM___Client
                 server = IPAddress.Parse("127.0.0.1");
             }
         }
+
+        private void showDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -45,6 +45,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ipPortTextBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -179,7 +180,8 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.settingsToolStripMenuItem});
+            this.settingsToolStripMenuItem,
+            this.showDebugWindowToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -187,8 +189,15 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // showDebugWindowToolStripMenuItem
+            // 
+            this.showDebugWindowToolStripMenuItem.Name = "showDebugWindowToolStripMenuItem";
+            this.showDebugWindowToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.showDebugWindowToolStripMenuItem.Text = "Show Debug Window";
+            this.showDebugWindowToolStripMenuItem.Click += new System.EventHandler(this.showDebugWindowToolStripMenuItem_Click);
             // 
             // MainClient
             // 
@@ -240,6 +249,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showDebugWindowToolStripMenuItem;
     }
 }
 
