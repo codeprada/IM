@@ -188,7 +188,7 @@ namespace IM___Client
                     ClientDisconnected((string)message);
                     break;
                 case IM_Message.MESSAGE_TYPE_SERVER_DISCONNECTING:
-                    ShuttingDown();
+                    //ShuttingDown();
                     EnableDisableControls(true);
                     break;
             }

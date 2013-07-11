@@ -97,7 +97,7 @@ namespace IM___Server
         {
             foreach (Client c in clients)
             {
-                if (!c.tcp.Client.Poll(100, SelectMode.SelectWrite))
+                if (c.tcp.Client != null && !c.tcp.Client.Poll(100, SelectMode.SelectWrite))
                 {
                     DisconnectFrom(c.Name);
                 }
@@ -144,16 +144,20 @@ namespace IM___Server
                     {
                         SetText(sender.Name + ": SetName: '" + message + "' approved");
                         type = IM_Message.MESSAGE_TYPE_SETNAME_CONFIRMATION_OK;
+                        sender.Send(new IM_Message("SERVER", String.Empty, type, message.Data));
+                        
+                        //Thread.Sleep(1000); //slow things down
                         SynchronizeClient(message.From, message);
                     }
                     else
                     {
                         type = IM_Message.MESSAGE_TYPE_SETNAME_CONFIRMATION_NO;
+                        sender.Send(new IM_Message("SERVER", String.Empty, type, message.Data));
                         SetText(sender.Name + ": SetName: '" + message + "' REJECTED");
                     }
 
                     //Send back name confirmation to Client
-                    sender.Send(new IM_Message("SERVER", String.Empty, type, message.Data));
+                    
                     break;
 
                 case IM_Message.MESSAGE_TYPE_MSG:
@@ -203,23 +207,27 @@ namespace IM___Server
         {
             try
             {
+
                 Client client = clients.WithName(old_name);
                 client.Name = new_name;
+               
+                //Must send the entire list to the new client
+                SendClientList(client);
 
-                
+                //Give client 2 seconds before sending out list
+                Thread.Sleep(2000);
+
                 ClientUpdateStruct custruct = new ClientUpdateStruct
                 {
                     name = new_name,
                     type = IM_Message.MESSAGE_TYPE_CLIENT_CONNECTED
                 };
 
+                
                 //Send an update to the other clients
                 Thread t2 = new Thread(new ParameterizedThreadStart(SendClientListUpdateToAll));
                 t2.Start(custruct);
-
-                //Must send the entire list to the new client
-                SendClientList(client);
-
+                
                 LoadListToBox();
                 SetText(String.Format("{0} connected", new_name));
                 //SetText("Set client name to " + new_name);

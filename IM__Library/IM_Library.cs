@@ -272,8 +272,8 @@ namespace IM___Library
                 catch (Exception ex)
                 {
                     //File.AppendAllText("log.txt", "Decrypting: " + ex.Message + Environment.NewLine);
-                    //background_worker.CancelAsync();
-                    //Close();
+                    background_worker.CancelAsync();
+                    Close();
                 }
             }
         }
