@@ -36,9 +36,9 @@
             this.clientsListBox = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.udpPortNumeric = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.ipPortTextBox = new System.Windows.Forms.NumericUpDown();
+            this.tcpPortNumeric = new System.Windows.Forms.NumericUpDown();
             this.button3 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.kickBtn = new System.Windows.Forms.Button();
@@ -47,8 +47,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ipPortTextBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udpPortNumeric)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tcpPortNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -100,9 +100,9 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.numericUpDown1);
+            this.groupBox1.Controls.Add(this.udpPortNumeric);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.ipPortTextBox);
+            this.groupBox1.Controls.Add(this.tcpPortNumeric);
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.button1);
@@ -113,17 +113,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Server Details";
             // 
-            // numericUpDown1
+            // udpPortNumeric
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(88, 49);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.udpPortNumeric.Location = new System.Drawing.Point(88, 49);
+            this.udpPortNumeric.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDown1.TabIndex = 15;
+            this.udpPortNumeric.Name = "udpPortNumeric";
+            this.udpPortNumeric.Size = new System.Drawing.Size(120, 20);
+            this.udpPortNumeric.TabIndex = 15;
             // 
             // label2
             // 
@@ -134,17 +134,17 @@
             this.label2.TabIndex = 14;
             this.label2.Text = "UDP Port";
             // 
-            // ipPortTextBox
+            // tcpPortNumeric
             // 
-            this.ipPortTextBox.Location = new System.Drawing.Point(88, 20);
-            this.ipPortTextBox.Maximum = new decimal(new int[] {
+            this.tcpPortNumeric.Location = new System.Drawing.Point(88, 20);
+            this.tcpPortNumeric.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-            this.ipPortTextBox.Name = "ipPortTextBox";
-            this.ipPortTextBox.Size = new System.Drawing.Size(120, 20);
-            this.ipPortTextBox.TabIndex = 13;
+            this.tcpPortNumeric.Name = "tcpPortNumeric";
+            this.tcpPortNumeric.Size = new System.Drawing.Size(120, 20);
+            this.tcpPortNumeric.TabIndex = 13;
             // 
             // button3
             // 
@@ -229,8 +229,8 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ipPortTextBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udpPortNumeric)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tcpPortNumeric)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -250,9 +250,9 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox broadcastTextBox;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown ipPortTextBox;
+        private System.Windows.Forms.NumericUpDown tcpPortNumeric;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown udpPortNumeric;
         private System.Windows.Forms.Label label2;
     }
 }

@@ -56,6 +56,8 @@ namespace IM___Client
             if (errorProvider1.GetError(usernameTxtBx) != String.Empty)
                 return;
 
+            connectBtn.Enabled = false;
+
             //if the server isn't found you want to try searching for it again
             //limiting rounds to 2. don't want an infinite loop here
             //of course we'll make a setting to increase or decrease the value
@@ -65,6 +67,7 @@ namespace IM___Client
             if (server == null)
             {
                 SetStatus("Cannot find server. Aborting Connection");
+                connectBtn.Enabled = true;
                 return;
             }
 
@@ -87,6 +90,7 @@ namespace IM___Client
                     }
                 }
             }
+            connectBtn.Enabled = true;
             
         }
         
@@ -147,6 +151,12 @@ namespace IM___Client
                         NameSet = true;
                         SetStatus("Status: Connected");
                         EnableDisableControls(false);
+                    }
+                    else
+                    {
+                        SetStatus("Name could not be verified. Shutting down.");
+                        ShuttingDown();
+                        EnableDisableControls(true);
                     }
                     break;
                 case IM_Message.MESSAGE_TYPE_SETNAME_CONFIRMATION_NO:

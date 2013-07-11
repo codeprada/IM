@@ -21,11 +21,11 @@ namespace IM___Server
     public partial class Main_Server : Form
     {
         private TcpListener listener;
-
+        private Random random;
         private delegate void SetTextBoxText(string text);
         private delegate void SetClientListBox();
         
-        private bool stop_listening = false;
+        private bool stop_listening = true;
                 
         private ClientList clients = new ClientList();
         private UdpClient udp_client;
@@ -46,7 +46,10 @@ namespace IM___Server
 
             MessageCallback = new Client.ProcessReceivedMessagesDelegate(ProcessReceivedMessages);
 
-            ipPortTextBox.Text = "8080";
+            tcpPortNumeric.Value = 8080;
+            udpPortNumeric.Value = 9999;
+
+            random = new Random(DateTime.Now.Millisecond);
         }
 
         private void Initialize_Server(int port)
@@ -65,7 +68,7 @@ namespace IM___Server
         private void button1_Click(object sender, EventArgs e)
         {
             stop_listening = false;
-            Initialize_Server((int)ipPortTextBox.Value);
+            Initialize_Server((int)tcpPortNumeric.Value);
 
             if (listener == null) return;
             Thread tcp = new Thread(new ThreadStart(StartListening));
@@ -139,11 +142,15 @@ namespace IM___Server
                     //check to see if requested name is available
                     if (clients.WithName(message) == null || ((string)message == String.Empty))
                     {
+                        SetText(sender.Name + ": SetName: '" + message + "' approved");
                         type = IM_Message.MESSAGE_TYPE_SETNAME_CONFIRMATION_OK;
                         SynchronizeClient(message.From, message);
                     }
                     else
+                    {
                         type = IM_Message.MESSAGE_TYPE_SETNAME_CONFIRMATION_NO;
+                        SetText(sender.Name + ": SetName: '" + message + "' REJECTED");
+                    }
 
                     //Send back name confirmation to Client
                     sender.Send(new IM_Message("SERVER", String.Empty, type, message.Data));
@@ -308,9 +315,10 @@ namespace IM___Server
                 if (listener.Pending())
                 {
                     Client c = new Client(listener.AcceptTcpClient(), MessageCallback);
-                    c.Name = "Client_" + new Random(DateTime.Now.Millisecond).Next(300, 1000000).ToString();
+                    c.Name = "Client_" + random.Next(300, 1000000).ToString();
                     clients.Add(c);
                     //Give client a temporary name based on the time they connected
+                    SetText("Name: '" + c.Name + "' is attempting to perform handshake");
                     c.Send(new IM_Message("SERVER", String.Empty, IM_Message.MESSAGE_TYPE_SETNAME, c.Name));
                     
                 }
