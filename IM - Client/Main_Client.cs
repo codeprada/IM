@@ -189,6 +189,8 @@ namespace IM___Client
                     break;
                 case IM_Message.MESSAGE_TYPE_SERVER_DISCONNECTING:
                     //ShuttingDown();
+                    SetStatus("Server Disconnected");
+                    clientsListBox.Items.Clear();
                     EnableDisableControls(true);
                     break;
             }
@@ -228,7 +230,7 @@ namespace IM___Client
         private void UpdateClientList(string[] client_list)
         {
             clientsListBox.Items.Clear();
-            if (client_list.Length == 1 && client_list[0] == String.Empty)
+            if (/*client_list.Length == 1 && */client_list[0] == String.Empty)
                 return;
 
             List<string> temp = client_list.ToList<string>();

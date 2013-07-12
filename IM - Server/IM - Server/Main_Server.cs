@@ -215,7 +215,7 @@ namespace IM___Server
                 SendClientList(client);
 
                 //Give client 2 seconds before sending out list
-                Thread.Sleep(2000);
+                //Thread.Sleep(2000);
 
                 ClientUpdateStruct custruct = new ClientUpdateStruct
                 {
@@ -267,7 +267,7 @@ namespace IM___Server
                     break;
             }
 
-            List<Client> buffer = new List<Client>(clients.Cast<Client>());
+            List<Client> buffer = new List<Client>(clients.Cast<Client>().Where(x => !x.Name.StartsWith("_|___|__|___|_"))); //don't want to include temporary names
             foreach (Client c in buffer)
             {
                 if (cu_struct.name != c.Name)
@@ -289,9 +289,10 @@ namespace IM___Server
             string clients_string = String.Empty;
 
             foreach (Client c in clients)
-                if(client.Name != c.Name)
+                if(client.Name != c.Name && !client.Name.StartsWith("_|___|__|___|_"))
                     clients_string += c.Name + "*";
-            
+
+            SetText("Sending list to " + client.Name);
             client.Send(new IM_Message("SERVER", String.Empty, IM_Message.MESSAGE_TYPE_CLIENT_LIST, clients_string));
             
         }
@@ -323,7 +324,7 @@ namespace IM___Server
                 if (listener.Pending())
                 {
                     Client c = new Client(listener.AcceptTcpClient(), MessageCallback);
-                    c.Name = "Client_" + random.Next(300, 1000000).ToString();
+                    c.Name = "_|___|__|___|_" + random.Next(300, 1000000).ToString();
                     clients.Add(c);
                     //Give client a temporary name based on the time they connected
                     SetText("Name: '" + c.Name + "' is attempting to perform handshake");
