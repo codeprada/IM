@@ -103,7 +103,7 @@ namespace IM___Library
         //Public Members
         public delegate void SendMessageDelegate(IM_Message message);
         public delegate void iAsyncCallBackDelegate(IAsyncResult ar);
-        public delegate void ProcessReceivedMessagesDelegate(IM_Message msg);
+        public delegate void ProcessReceivedMessagesDelegate(object msg);
         
         //Private Members
         //private StreamWriter writer;
@@ -281,7 +281,8 @@ namespace IM___Library
         private void background_worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null)
-                MessageCallbackDelegate((IM_Message)e.UserState);
+                //new Thread(new ParameterizedThreadStart(MessageCallbackDelegate)).Start(e.UserState);
+                MessageCallbackDelegate(e.UserState);
         }
         #endregion
         /**************************************************/

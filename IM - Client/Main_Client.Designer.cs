@@ -46,6 +46,8 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label4 = new System.Windows.Forms.Label();
+            this.outputTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ipPortTextBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -61,16 +63,16 @@
             this.groupBox1.Controls.Add(this.disconnectBtn);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.connectBtn);
-            this.groupBox1.Location = new System.Drawing.Point(12, 41);
+            this.groupBox1.Location = new System.Drawing.Point(12, 27);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(219, 177);
+            this.groupBox1.Size = new System.Drawing.Size(219, 106);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Server Details";
             // 
             // ipPortTextBox
             // 
-            this.ipPortTextBox.Location = new System.Drawing.Point(92, 52);
+            this.ipPortTextBox.Location = new System.Drawing.Point(90, 21);
             this.ipPortTextBox.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -87,7 +89,7 @@
             // 
             // usernameTxtBx
             // 
-            this.usernameTxtBx.Location = new System.Drawing.Point(92, 79);
+            this.usernameTxtBx.Location = new System.Drawing.Point(90, 48);
             this.usernameTxtBx.Name = "usernameTxtBx";
             this.usernameTxtBx.Size = new System.Drawing.Size(100, 20);
             this.usernameTxtBx.TabIndex = 0;
@@ -96,7 +98,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 82);
+            this.label1.Location = new System.Drawing.Point(6, 51);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 13;
@@ -105,7 +107,7 @@
             // disconnectBtn
             // 
             this.disconnectBtn.Enabled = false;
-            this.disconnectBtn.Location = new System.Drawing.Point(117, 107);
+            this.disconnectBtn.Location = new System.Drawing.Point(115, 76);
             this.disconnectBtn.Name = "disconnectBtn";
             this.disconnectBtn.Size = new System.Drawing.Size(75, 23);
             this.disconnectBtn.TabIndex = 3;
@@ -116,7 +118,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 56);
+            this.label3.Location = new System.Drawing.Point(6, 25);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(66, 13);
             this.label3.TabIndex = 11;
@@ -124,7 +126,7 @@
             // 
             // connectBtn
             // 
-            this.connectBtn.Location = new System.Drawing.Point(11, 107);
+            this.connectBtn.Location = new System.Drawing.Point(9, 76);
             this.connectBtn.Name = "connectBtn";
             this.connectBtn.Size = new System.Drawing.Size(75, 23);
             this.connectBtn.TabIndex = 2;
@@ -135,9 +137,9 @@
             // clientsListBox
             // 
             this.clientsListBox.FormattingEnabled = true;
-            this.clientsListBox.Location = new System.Drawing.Point(12, 224);
+            this.clientsListBox.Location = new System.Drawing.Point(12, 139);
             this.clientsListBox.Name = "clientsListBox";
-            this.clientsListBox.Size = new System.Drawing.Size(219, 303);
+            this.clientsListBox.Size = new System.Drawing.Size(219, 212);
             this.clientsListBox.TabIndex = 9;
             this.clientsListBox.DoubleClick += new System.EventHandler(this.clientsListBox_DoubleClick);
             // 
@@ -199,12 +201,34 @@
             this.showDebugWindowToolStripMenuItem.Text = "Show Debug Window";
             this.showDebugWindowToolStripMenuItem.Click += new System.EventHandler(this.showDebugWindowToolStripMenuItem_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(9, 360);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(39, 13);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "Output";
+            // 
+            // outputTextBox
+            // 
+            this.outputTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.outputTextBox.Location = new System.Drawing.Point(12, 376);
+            this.outputTextBox.Multiline = true;
+            this.outputTextBox.Name = "outputTextBox";
+            this.outputTextBox.ReadOnly = true;
+            this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.outputTextBox.Size = new System.Drawing.Size(219, 170);
+            this.outputTextBox.TabIndex = 12;
+            // 
             // MainClient
             // 
             this.AcceptButton = this.connectBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(237, 571);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.outputTextBox);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.clientsListBox);
@@ -250,6 +274,8 @@
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showDebugWindowToolStripMenuItem;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox outputTextBox;
     }
 }
 

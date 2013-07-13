@@ -30,6 +30,8 @@ namespace IM___Client
         public static Dictionary<string, IPAddress> hostToIP;
         private bool messageReceived = false;
         private IPAddress server = null;
+        private delegate void SetTextBoxText(string text);
+        private object ListLock = new object();
 
         public struct MessengerObjects
         {
@@ -86,11 +88,12 @@ namespace IM___Client
                     if (count >= 2)
                     {
                         SetStatus("Cannot find server");
+                        connectBtn.Enabled = true;
                         break;
                     }
                 }
             }
-            connectBtn.Enabled = true;
+            
             
         }
         
@@ -113,6 +116,9 @@ namespace IM___Client
                 owner_client.Name = usernameTxtBx.Text;
                 this.Text = owner_client.Name;
                 NameSet = false;
+
+                //connectBtn.Enabled = true;
+
                 return tcp_client.Connected;
             }
             catch (Exception e)
@@ -120,6 +126,7 @@ namespace IM___Client
                 MessageBox.Show(e.Message);
             }
 
+            connectBtn.Enabled = true;
             return false;
         }
 
@@ -130,8 +137,12 @@ namespace IM___Client
             owner_client.Send(message);
         }
 
-        private void ProcessReceivedMessages(IM_Message message)
+        private void ProcessReceivedMessages(object msg)
         {
+            IM_Message message = (IM_Message)msg;
+
+            SetText("***************\nMessage Received: " + message + "\n***************");
+
             switch (message.Type)
             {
                 case IM_Message.MESSAGE_TYPE_GETNAME:
@@ -140,6 +151,7 @@ namespace IM___Client
                     break;
                 case IM_Message.MESSAGE_TYPE_SETNAME:
                     //This is our temporary name
+                    SetText("Temp Name: " + message);
                     TempName = message; //Implicit conversion here
                     Initialize(message);
                     break;
@@ -149,12 +161,14 @@ namespace IM___Client
                     {
                         //Everything seemed to have went OK in the Name Acknowledgement
                         NameSet = true;
+                        SetText("Name set to " + owner_client.Name);
                         SetStatus("Status: Connected");
                         EnableDisableControls(false);
                     }
                     else
                     {
                         SetStatus("Name could not be verified. Shutting down.");
+                        SetText("Name could not be verified");
                         ShuttingDown();
                         EnableDisableControls(true);
                     }
@@ -162,6 +176,7 @@ namespace IM___Client
                 case IM_Message.MESSAGE_TYPE_SETNAME_CONFIRMATION_NO:
                     //YOU MUST REQUEST ANOTHER NAME HERE
                     NameSet = false;
+                    SetText("Name rejected");
                     ShuttingDown(); //disconnect from server
                     EnableDisableControls(true);
                     SetStatus("Request another name!");
@@ -171,7 +186,9 @@ namespace IM___Client
                     break;
                 case IM_Message.MESSAGE_TYPE_CLIENT_LIST:
                     //Only will be called when the client connects first
+                    SetText("Client List: " + (string)message);
                     UpdateClientList(((string)message).Split(new char[] { '*' }));
+                    Send(new IM_Message(owner_client.Name, String.Empty, IM_Message.MESSAGE_TYPE_CLIENT_LIST_CONFIRMATION, String.Empty));
                     break;
                 case IM_Message.MESSAGE_TYPE_FORM_CLOSING:
                     MessengerStructure.Remove(message);
@@ -180,15 +197,19 @@ namespace IM___Client
                     MessageBox.Show(message, "Broadcast From " + message.From, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 case IM_Message.MESSAGE_TYPE_CLIENT_CONNECTED:
+                    SetText(message + " connected.");
                     MessageWindowRouter(message);
                     ClientConnected((string)message);
                     break;
                 case IM_Message.MESSAGE_TYPE_CLIENT_DISCONNECTED:
+                    SetText(message + " disconnected.");
                     MessageWindowRouter(message);
                     ClientDisconnected((string)message);
                     break;
                 case IM_Message.MESSAGE_TYPE_SERVER_DISCONNECTING:
                     //ShuttingDown();
+
+                    SetText("Server disconnecting.");
                     SetStatus("Server Disconnected");
                     clientsListBox.Items.Clear();
                     EnableDisableControls(true);
@@ -198,6 +219,7 @@ namespace IM___Client
 
         private void Initialize(IM_Message message)
         {
+            SetText("Initializing...");
             Send(new IM_Message(TempName, "SERVER", IM_Message.MESSAGE_TYPE_SETNAME, owner_client.Name));
 
         }
@@ -225,22 +247,42 @@ namespace IM___Client
             }
         }
 
-        
+        private void SetText(string text)
+        {
+            if (this.outputTextBox.InvokeRequired)
+            {
+                SetTextBoxText s = new SetTextBoxText(SetText);
+                this.Invoke(s, new object[] { text });
+            }
+            else
+            {
+                outputTextBox.AppendText(text + Environment.NewLine);
+            }
+        }
 
         private void UpdateClientList(string[] client_list)
         {
+            Monitor.Enter(ListLock);
+
             clientsListBox.Items.Clear();
-            if (/*client_list.Length == 1 && */client_list[0] == String.Empty)
+            if (client_list.Length == 1 && client_list[0] == String.Empty)
                 return;
 
-            List<string> temp = client_list.ToList<string>();
-            temp.Remove(owner_client.Name);
-            clientsListBox.Items.AddRange(temp.ToArray<string>());
+
+            clientsListBox.Items.AddRange(
+                new List<string>(client_list).Cast<string>().Distinct().Where(
+                    x => x != owner_client.Name 
+                        && 
+                    x != String.Empty).ToArray()
+            );
+
+            Monitor.Exit(ListLock);
         }
 
         private void ClientConnected(string client_name)
         {
-            clientsListBox.Items.Add(client_name);
+            if(!clientsListBox.Items.Contains(client_name))
+                clientsListBox.Items.Add(client_name);
         }
 
         private void ClientDisconnected(string client_name)

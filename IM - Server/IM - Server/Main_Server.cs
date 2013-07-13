@@ -24,14 +24,22 @@ namespace IM___Server
         private Random random;
         private delegate void SetTextBoxText(string text);
         private delegate void SetClientListBox();
+        private delegate void ReceiverSend();
+        private delegate void SenderSend();
         
+        //Program will not exit if it is still listening for connections
         private bool stop_listening = true;
                 
         private ClientList clients = new ClientList();
         private UdpClient udp_client;
         private Thread udp_thread;
 
+        private enum SERVER_STATE { LISTENING, NONE };
+        private SERVER_STATE server_state = SERVER_STATE.NONE;
+
         public Client.ProcessReceivedMessagesDelegate MessageCallback;
+
+        private object ListLock = new object();
 
         private struct ClientUpdateStruct
         {
@@ -67,17 +75,31 @@ namespace IM___Server
 
         private void button1_Click(object sender, EventArgs e)
         {
-            stop_listening = false;
-            Initialize_Server((int)tcpPortNumeric.Value);
+            if (server_state == SERVER_STATE.NONE)
+            {
+                server_state = SERVER_STATE.LISTENING;
+                stop_listening = false;
 
-            if (listener == null) return;
-            Thread tcp = new Thread(new ThreadStart(StartListening));
-            tcp.Start();
+                Initialize_Server((int)tcpPortNumeric.Value);
 
-            udp_thread = new Thread(new ThreadStart(StartListeningIdentity));
-            udp_thread.Start();
+                if (listener == null) return;
+                Thread tcp = new Thread(new ThreadStart(StartListening));
+                tcp.Start();
 
-            SetText("Listening...");
+                udp_thread = new Thread(new ThreadStart(StartListeningIdentity));
+                udp_thread.Start();
+
+                SetText("Listening...");
+                listeningLabel.ForeColor = Color.Red;
+                listenBtn.Text = "Stop Server";
+            }
+            else
+            {
+                Stop();
+                server_state = SERVER_STATE.NONE;
+                listeningLabel.ForeColor = Color.Transparent;
+                listenBtn.Text = "Start Server";
+            }
         }
 
         private void SetText(string text)
@@ -122,15 +144,20 @@ namespace IM___Server
             }
         }
 
+
+
         /*******************************************************************/
         /// <summary>
         /// Brain of Server
         /// </summary>
         /// <param name="message"></param>
-        private void ProcessReceivedMessages(IM_Message message)
+        private void ProcessReceivedMessages(object msg)
         {
+            IM_Message message = (IM_Message)msg;
+
             Client sender = clients.WithName(message.From);
             Client receiver = clients.WithName(message.To);
+
 
             //if (sender == null || receiver == null) return;
             //SetText("Message Received from " + message.From + ": " + message.Msg);
@@ -159,6 +186,21 @@ namespace IM___Server
                     //Send back name confirmation to Client
                     
                     break;
+                case IM_Message.MESSAGE_TYPE_CLIENT_LIST_CONFIRMATION:
+                    ClientUpdateStruct custruct = new ClientUpdateStruct
+                    {
+                        name = sender.Name,
+                        type = IM_Message.MESSAGE_TYPE_CLIENT_CONNECTED
+                    };
+
+                
+                    //Send an update to the other clients
+                    Thread t2 = new Thread(new ParameterizedThreadStart(SendClientListUpdateToAll));
+                    t2.Start(custruct);
+                
+                    LoadListToBox();
+                    SetText(String.Format("{0} connected", sender.Name));
+                break;
 
                 case IM_Message.MESSAGE_TYPE_MSG:
                     receiver.Send(new IM_Message(sender.Name, receiver.Name, IM_Message.MESSAGE_TYPE_MSG, message.Data));
@@ -207,29 +249,20 @@ namespace IM___Server
         {
             try
             {
+                Monitor.Enter(ListLock);
 
                 Client client = clients.WithName(old_name);
                 client.Name = new_name;
-               
+
+                Monitor.Exit(ListLock);
+
                 //Must send the entire list to the new client
-                SendClientList(client);
+                new Thread(new ParameterizedThreadStart(SendClientList)).Start(client);
 
                 //Give client 2 seconds before sending out list
                 //Thread.Sleep(2000);
 
-                ClientUpdateStruct custruct = new ClientUpdateStruct
-                {
-                    name = new_name,
-                    type = IM_Message.MESSAGE_TYPE_CLIENT_CONNECTED
-                };
-
                 
-                //Send an update to the other clients
-                Thread t2 = new Thread(new ParameterizedThreadStart(SendClientListUpdateToAll));
-                t2.Start(custruct);
-                
-                LoadListToBox();
-                SetText(String.Format("{0} connected", new_name));
                 //SetText("Set client name to " + new_name);
             }
             catch (Exception)
@@ -267,16 +300,24 @@ namespace IM___Server
                     break;
             }
 
-            List<Client> buffer = new List<Client>(clients.Cast<Client>().Where(x => !x.Name.StartsWith("_|___|__|___|_"))); //don't want to include temporary names
+            Monitor.Enter(ListLock);
+
+            List<Client> buffer = new List<Client>(
+                clients.Cast<Client>()/*.Where(x => !x.Name.StartsWith("_|___|__|___|_"))*/
+            ); //don't want to include temporary names
+
             foreach (Client c in buffer)
             {
                 if (cu_struct.name != c.Name)
                 {
                     //Set the TO field here
                     message.To = c.Name;
+                    Thread.Sleep(500);
                     c.Send(message);
                 }
             }
+
+            Monitor.Exit(ListLock);
             
         }
 
@@ -284,16 +325,23 @@ namespace IM___Server
         /// Sends list to newly connected Client
         /// </summary>
         /// <param name="client"></param>
-        private void SendClientList(Client client)
+        private void SendClientList(object c)
         {
+            Client client = (Client)c;
+
             string clients_string = String.Empty;
 
-            foreach (Client c in clients)
-                if(client.Name != c.Name && !client.Name.StartsWith("_|___|__|___|_"))
-                    clients_string += c.Name + "*";
+            Monitor.Enter(ListLock);
 
-            SetText("Sending list to " + client.Name);
+            foreach (Client c_buffer in clients)
+                if (client.Name != c_buffer.Name && !c_buffer.Name.StartsWith("_|___|__|___|_"))
+                    clients_string += c_buffer.Name + "*";
+
+            Monitor.Exit(ListLock);
+
+            Thread.Sleep(700);
             client.Send(new IM_Message("SERVER", String.Empty, IM_Message.MESSAGE_TYPE_CLIENT_LIST, clients_string));
+            SetText("Sent list to " + client.Name);
             
         }
 
@@ -318,7 +366,7 @@ namespace IM___Server
             
             while (!stop_listening)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
                 listener.Start();
 
                 if (listener.Pending())
@@ -439,11 +487,6 @@ namespace IM___Server
         {
             if (clientsListBox.SelectedItem.ToString() != "")
                 DisconnectFrom(clientsListBox.SelectedItem.ToString());
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            Stop();
         }
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)

@@ -35,6 +35,7 @@ namespace Protocol
                          MESSAGE_TYPE_SETNAME_CONFIRMATION_NO = 18,
                          MESSAGE_TYPE_CLIENT_NAME_CHANGE = 19,
                          MESSAGE_TYPE_SERVER_DISCONNECTING = 20,
+                         MESSAGE_TYPE_CLIENT_LIST_CONFIRMATION = 21,
 
                          UDP_PORT = 9999;
 

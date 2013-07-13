@@ -73,8 +73,10 @@ namespace IM___Client
         /// Receive Message from main client
         /// </summary>
         /// <param name="message"></param>
-        private void MessageProcessor(IM_Message message)
+        private void MessageProcessor(object msg)
         {
+            IM_Message message = (IM_Message)msg;
+
             switch(message.Type)
             {
                 case IM_Message.MESSAGE_TYPE_MSG:

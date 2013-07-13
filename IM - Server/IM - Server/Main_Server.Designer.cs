@@ -30,36 +30,37 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_Server));
-            this.button1 = new System.Windows.Forms.Button();
+            this.listenBtn = new System.Windows.Forms.Button();
             this.outputTextBox = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.clientsListBox = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.listeningLabel = new System.Windows.Forms.Label();
             this.udpPortNumeric = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.tcpPortNumeric = new System.Windows.Forms.NumericUpDown();
-            this.button3 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.kickBtn = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.broadcastTextBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.processingLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udpPortNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tcpPortNumeric)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // listenBtn
             // 
-            this.button1.Location = new System.Drawing.Point(220, 17);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Start";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.listenBtn.Location = new System.Drawing.Point(188, 16);
+            this.listenBtn.Name = "listenBtn";
+            this.listenBtn.Size = new System.Drawing.Size(106, 49);
+            this.listenBtn.TabIndex = 2;
+            this.listenBtn.Text = "Start Server";
+            this.listenBtn.UseVisualStyleBackColor = true;
+            this.listenBtn.Click += new System.EventHandler(this.button1_Click);
             // 
             // outputTextBox
             // 
@@ -73,7 +74,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(238, 202);
+            this.button2.Location = new System.Drawing.Point(238, 220);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 4;
@@ -100,22 +101,33 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.processingLabel);
+            this.groupBox1.Controls.Add(this.listeningLabel);
             this.groupBox1.Controls.Add(this.udpPortNumeric);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.tcpPortNumeric);
-            this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.listenBtn);
             this.groupBox1.Location = new System.Drawing.Point(12, 8);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(301, 82);
+            this.groupBox1.Size = new System.Drawing.Size(301, 111);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Server Details";
             // 
+            // listeningLabel
+            // 
+            this.listeningLabel.AutoSize = true;
+            this.listeningLabel.ForeColor = System.Drawing.Color.Transparent;
+            this.listeningLabel.Location = new System.Drawing.Point(6, 85);
+            this.listeningLabel.Name = "listeningLabel";
+            this.listeningLabel.Size = new System.Drawing.Size(49, 13);
+            this.listeningLabel.TabIndex = 16;
+            this.listeningLabel.Text = "Listening";
+            // 
             // udpPortNumeric
             // 
-            this.udpPortNumeric.Location = new System.Drawing.Point(88, 49);
+            this.udpPortNumeric.Location = new System.Drawing.Point(62, 45);
             this.udpPortNumeric.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -128,7 +140,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 51);
+            this.label2.Location = new System.Drawing.Point(6, 47);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(52, 13);
             this.label2.TabIndex = 14;
@@ -136,7 +148,7 @@
             // 
             // tcpPortNumeric
             // 
-            this.tcpPortNumeric.Location = new System.Drawing.Point(88, 20);
+            this.tcpPortNumeric.Location = new System.Drawing.Point(62, 19);
             this.tcpPortNumeric.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -146,20 +158,10 @@
             this.tcpPortNumeric.Size = new System.Drawing.Size(120, 20);
             this.tcpPortNumeric.TabIndex = 13;
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(220, 46);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 12;
-            this.button3.Text = "Stop";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 22);
+            this.label3.Location = new System.Drawing.Point(6, 21);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(50, 13);
             this.label3.TabIndex = 11;
@@ -186,7 +188,7 @@
             // 
             // broadcastTextBox
             // 
-            this.broadcastTextBox.Location = new System.Drawing.Point(13, 120);
+            this.broadcastTextBox.Location = new System.Drawing.Point(12, 138);
             this.broadcastTextBox.Multiline = true;
             this.broadcastTextBox.Name = "broadcastTextBox";
             this.broadcastTextBox.Size = new System.Drawing.Size(300, 76);
@@ -195,7 +197,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 104);
+            this.label5.Location = new System.Drawing.Point(12, 122);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(55, 13);
             this.label5.TabIndex = 11;
@@ -206,6 +208,17 @@
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
+            // processingLabel
+            // 
+            this.processingLabel.AutoSize = true;
+            this.processingLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.processingLabel.Location = new System.Drawing.Point(74, 85);
+            this.processingLabel.Name = "processingLabel";
+            this.processingLabel.Size = new System.Drawing.Size(59, 13);
+            this.processingLabel.TabIndex = 17;
+            this.processingLabel.Text = "Processing";
+            this.processingLabel.Visible = false;
             // 
             // Main_Server
             // 
@@ -238,13 +251,12 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button listenBtn;
         private System.Windows.Forms.TextBox outputTextBox;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ListBox clientsListBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button kickBtn;
         private System.Windows.Forms.Label label4;
@@ -254,6 +266,8 @@
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.NumericUpDown udpPortNumeric;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label listeningLabel;
+        private System.Windows.Forms.Label processingLabel;
     }
 }
 
