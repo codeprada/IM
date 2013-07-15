@@ -174,7 +174,9 @@ namespace IM___Server
                         sender.Send(new IM_Message("SERVER", String.Empty, type, message.Data));
                         
                         //Thread.Sleep(1000); //slow things down
+                        Monitor.Enter(ListLock);
                         SynchronizeClient(message.From, message);
+                        Monitor.Exit(ListLock);
                     }
                     else
                     {
@@ -363,20 +365,25 @@ namespace IM___Server
 
         private void StartListening()
         {
-            
+            listener.Start();
             while (!stop_listening)
             {
-                Thread.Sleep(1000);
-                listener.Start();
+                Thread.Sleep(700);
+                
 
                 if (listener.Pending())
                 {
+                    
                     Client c = new Client(listener.AcceptTcpClient(), MessageCallback);
-                    c.Name = "_|___|__|___|_" + random.Next(300, 1000000).ToString();
+                    SetText("Connection established with " + ((IPEndPoint)c.tcp.Client.RemoteEndPoint).Address.ToString());
+
+                    c.Name = "_|___|__|___|_" + random.Next(300, 3000000).ToString();
                     clients.Add(c);
                     //Give client a temporary name based on the time they connected
-                    SetText("Name: '" + c.Name + "' is attempting to perform handshake");
+                    SetText(c.Name + " attempting handshake");
+                    Thread.Sleep(1000);
                     c.Send(new IM_Message("SERVER", String.Empty, IM_Message.MESSAGE_TYPE_SETNAME, c.Name));
+                    SetText("Sent SET_NAME request to " + c.Name);
                     
                 }
             }
@@ -385,13 +392,38 @@ namespace IM___Server
 
         private void StartListeningIdentity()
         {
-            IPEndPoint ip_endpoint = new IPEndPoint(IPAddress.Any, Protocol.IM_Message.UDP_PORT);
+            IPEndPoint ip_endpoint = (new IPEndPoint(IPAddress.Any, 0));
+            /*EndPoint endpoint = (EndPoint)ip_endpoint;
+
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Udp);
+            socket.Bind(endpoint);
+
+            while (!stop_listening)
+            {
+                byte[] buffer = new byte[256];
+                socket.ReceiveFrom(buffer, 0, 256, SocketFlags.None, ref endpoint);
+
+                string msg = ASCIIEncoding.ASCII.GetString(buffer);
+
+                if (msg.Contains(IM_Message.MESSAGE_TYPE_HELLO))
+                {
+                    byte[] temp = ASCIIEncoding.ASCII.GetBytes(IM_Message.MESSAGE_TYPE_CONFIRMATION);
+                    UdpClient udp_client = new UdpClient((IPEndPoint)endpoint);
+                    udp_client.Connect((IPEndPoint)endpoint);
+                    udp_client.Send(temp, temp.Length);
+                    
+                }
+
+
+                Thread.Sleep(300);
+            }*/
+
 
             udp_client = new UdpClient(); //new UdpClient(Protocol.IM_Message.UDP_PORT);
             udp_client.ExclusiveAddressUse = false;
             udp_client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             udp_client.Client.Bind(ip_endpoint);
-            udp_client.JoinMulticastGroup(IPAddress.Parse(Protocol.IM_Message.MULTI_CAST_ADDRESS));
+        //udp_client.JoinMulticastGroup(IPAddress.Parse(Protocol.IM_Message.MULTI_CAST_ADDRESS));
 
             byte[] b_data = ASCIIEncoding.ASCII.GetBytes(IM_Message.MESSAGE_TYPE_HELLO);
 

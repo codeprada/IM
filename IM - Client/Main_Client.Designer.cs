@@ -199,7 +199,6 @@
             this.showDebugWindowToolStripMenuItem.Name = "showDebugWindowToolStripMenuItem";
             this.showDebugWindowToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.showDebugWindowToolStripMenuItem.Text = "Show Debug Window";
-            this.showDebugWindowToolStripMenuItem.Click += new System.EventHandler(this.showDebugWindowToolStripMenuItem_Click);
             // 
             // label4
             // 

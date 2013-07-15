@@ -6,6 +6,7 @@ using System.Collections;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.ComponentModel;
 using System.Security.Cryptography;
@@ -524,6 +525,23 @@ namespace IM___Library
     public class SettingsManager
     {
 
+    }
+    #endregion
+
+    #region PingObject
+    public class PingObject
+    {
+        public Ping PingObj
+        {
+            get;
+            set;
+        }
+
+        public AutoResetEvent ResetEvent
+        {
+            get;
+            set;
+        }
     }
     #endregion
 }

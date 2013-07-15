@@ -29,22 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WindowMessenger));
-            this.mainOutputTxtBox = new System.Windows.Forms.TextBox();
             this.msgTextBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.mainOutputTxtBox = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
-            // 
-            // mainOutputTxtBox
-            // 
-            this.mainOutputTxtBox.BackColor = System.Drawing.Color.White;
-            this.mainOutputTxtBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mainOutputTxtBox.Location = new System.Drawing.Point(13, 13);
-            this.mainOutputTxtBox.Multiline = true;
-            this.mainOutputTxtBox.Name = "mainOutputTxtBox";
-            this.mainOutputTxtBox.ReadOnly = true;
-            this.mainOutputTxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.mainOutputTxtBox.Size = new System.Drawing.Size(348, 193);
-            this.mainOutputTxtBox.TabIndex = 1;
             // 
             // msgTextBox
             // 
@@ -65,15 +53,23 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // mainOutputTxtBox
+            // 
+            this.mainOutputTxtBox.Location = new System.Drawing.Point(12, 12);
+            this.mainOutputTxtBox.Name = "mainOutputTxtBox";
+            this.mainOutputTxtBox.Size = new System.Drawing.Size(349, 194);
+            this.mainOutputTxtBox.TabIndex = 3;
+            this.mainOutputTxtBox.Text = "";
+            // 
             // WindowMessenger
             // 
             this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(373, 244);
+            this.ClientSize = new System.Drawing.Size(373, 241);
+            this.Controls.Add(this.mainOutputTxtBox);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.msgTextBox);
-            this.Controls.Add(this.mainOutputTxtBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "WindowMessenger";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.WindowMessenger_FormClosed);
@@ -84,8 +80,8 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox mainOutputTxtBox;
         private System.Windows.Forms.TextBox msgTextBox;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.RichTextBox mainOutputTxtBox;
     }
 }

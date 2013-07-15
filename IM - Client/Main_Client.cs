@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using System.Net;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.IO;
 
@@ -141,7 +142,7 @@ namespace IM___Client
         {
             IM_Message message = (IM_Message)msg;
 
-            SetText("***************\nMessage Received: " + message + "\n***************");
+            //SetText("***************\nMessage Received: " + message + "\n***************");
 
             switch (message.Type)
             {
@@ -414,7 +415,7 @@ namespace IM___Client
         {
 
 
-            UdpClient udp_client = new UdpClient(); 
+            /*UdpClient udp_client = new UdpClient(); 
             IPEndPoint ip_endpoint = new IPEndPoint(IPAddress.Parse(Protocol.IM_Message.MULTI_CAST_ADDRESS), Protocol.IM_Message.UDP_PORT);
             udp_client.JoinMulticastGroup(IPAddress.Parse(Protocol.IM_Message.MULTI_CAST_ADDRESS));
 
@@ -433,12 +434,49 @@ namespace IM___Client
             else
             {
                 server = IPAddress.Parse("127.0.0.1");
+            }*/
+
+
+
+
+            List<WaitHandle> wait_handles = new List<WaitHandle>();
+
+            string ip_base = String.Join(".", GetIP(Dns.GetHostName()).ToString().Split(new char[] { '.' }).Take(3)) + ".";
+
+            PingOptions po = new PingOptions();
+            po.Ttl = 64;
+            po.DontFragment = true;
+
+            for (int i = 1; i < 256; i++)
+            {
+                Ping p = new Ping();
+                p.PingCompleted += p_PingCompleted;
+
+                AutoResetEvent r_event = new AutoResetEvent(false);
+                wait_handles.Add(r_event);
+
+                p.SendAsync(ip_base + i, 500, ASCIIEncoding.ASCII.GetBytes(IM_Message.MESSAGE_TYPE_HELLO), r_event);
             }
+
+
+            WaitHandle.WaitAll(wait_handles.ToArray());
+            
+            
         }
 
-        private void showDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        void p_PingCompleted(object sender, PingCompletedEventArgs e)
         {
+            if (e.Error == null)
+            {
+                if (ASCIIEncoding.ASCII.GetString(e.Reply.Buffer) == IM_Message.MESSAGE_TYPE_CONFIRMATION)
+                {
+                    server = e.Reply.Address;
+                }
+            }
 
+            ((AutoResetEvent)e.UserState).Set();
         }
+
+        
     }
 }
